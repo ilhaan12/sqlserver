@@ -1,114 +1,130 @@
-/*
-Module 8 Challenge: SQL Statements
-*/
-
-/*
-Instructions:
-For this challenge, we'll be retrieving, sorting, and 
-filtering data from the Northwind Database. 
-We'll also insert records, update, and delete records.
-
-
-Use the Northwind database for this assignment. Use the
-instructions in the comments to write the SQL statements
-for this assignment.
- 
-Run and test your SQL code using the sqlcmd command in the Terminal.
-Here's an example: 
-sqlcmd -S localhost -U sa -P P@ssw0rd -d Northwind -Q "SELECT * FROM Customers;"
-*/
-
-
 USE Northwind;
 
 /*
-1.	
-Retrieve a list of products. 
+1. Retrieve a list of products. 
 The list should include the product name, unit price, 
 and how many units Northwind has in stock.
 */
-
-/
-*2.	
-List the product name and units in stock for products where UnitsInStock equals zero.
-*/
+-- This query retrieves the product name, unit price, and units in stock for all products
+SELECT ProductName, UnitPrice, UnitsInStock
+FROM Products;
 
 /*
-3.	List the product name and the unit price for each product. 
+2. List the product name and units in stock for products where UnitsInStock equals zero.
+*/
+-- This query retrieves the product name and units in stock for products with zero units in stock
+SELECT ProductName, UnitsInStock
+FROM Products
+WHERE UnitsInStock = 0;
+
+/*
+3. List the product name and the unit price for each product. 
 Sort the list with the smallest unit price on top.
 */
-
+-- This query retrieves the product name and unit price for each product, sorted by unit price in ascending order
+SELECT ProductName, UnitPrice
+FROM Products
+ORDER BY UnitPrice ASC;
 
 /*
-4.	List all products with the brand "Sir Rodney's" in the product name. 
+4. List all products with the brand "Sir Rodney's" in the product name.
 */
-
+-- This query retrieves all products whose product name contains "Sir Rodney's"
+SELECT ProductName
+FROM Products
+WHERE ProductName LIKE '%Sir Rodney''s%';
 
 /*
-5.	Create a list of product names and product IDs for products 
-with supplier ID 20. Order by product name. */
-
-/*
-6.	List the product ID and product name for products with 
-zero units on order. Order by product ID. 
+5. Create a list of product names and product IDs for products with supplier ID 20. Order by product name.
 */
+-- This query retrieves product names and product IDs for products with supplier ID 20, ordered by product name
+SELECT ProductID, ProductName
+FROM Products
+WHERE SupplierID = 20
+ORDER BY ProductName;
 
 /*
-7. Your boss has asked you for a list of orders for
-       the employee Janet Leverling. 
-       The list should contain the order ID, the company name
-	   of the customer, and the name of the employee who
-	   helped place the order.
-       (Hint: Use a JOIN to retrieve data from more than one table.)
+6. List the product ID and product name for products with zero units on order. Order by product ID.
 */
+-- This query retrieves product ID and product name for products with zero units on order, ordered by product ID
+SELECT ProductID, ProductName
+FROM Products
+WHERE UnitsOnOrder = 0
+ORDER BY ProductID;
 
 /*
-8. Insert a new record into the products table with a product name
-    that is your favorite food, a unit price that is $4.55, supplier ID 26, and category ID 5.
+7. Your boss has asked you for a list of orders for the employee Janet Leverling. 
+The list should contain the order ID, the company name of the customer, and the name of the employee who helped place the order.
+(Hint: Use a JOIN to retrieve data from more than one table.)
 */
- 
-
+-- This query retrieves order details for the employee Janet Leverling, using a JOIN to connect Orders, Employees, and Customers tables
+SELECT O.OrderID, C.CompanyName, E.LastName AS EmployeeName
+FROM Orders O
+JOIN Customers C ON O.CustomerID = C.CustomerID
+JOIN Employees E ON O.EmployeeID = E.EmployeeID
+WHERE E.LastName = 'Leverling';
 
 /*
-9. Display the new record you added to the products table 
-where the product name is your favorite food.
+8. Insert a new record into the products table with a product name that is your favorite food, a unit price that is $4.55, supplier ID 26, and category ID 5.
 */
+-- This query inserts a new product into the Products table with specific values for product name, unit price, supplier ID, and category ID
+INSERT INTO Products (ProductName, UnitPrice, SupplierID, CategoryID)
+VALUES ('Pizza', 4.55, 26, 5);  -- Replace 'Pizza' with your favorite food
+
+/*
+9. Display the new record you added to the products table where the product name is your favorite food.
+*/
+-- This query retrieves the newly inserted record from the Products table where the product name is 'Pizza' (or your favorite food)
+SELECT * 
+FROM Products
+WHERE ProductName = 'Pizza';  -- Replace 'Pizza' with your favorite food
 
 /*
 10. Insert a record into the suppliers table.
-    The record should contain the following values:
-    - Supplier ID 30
-	- Your school's name as the CompanyName
-	- Your name as the ContactName
-	- Manager as the ContactTitle
-	- 123 Sesame Street as the address
-    - Saint Paul as the city
+The record should contain the following values:
+- Supplier ID 30
+- Your school's name as the CompanyName
+- Your name as the ContactName
+- Manager as the ContactTitle
+- 123 Sesame Street as the address
+- Saint Paul as the city
 */
- 
+-- This query inserts a new supplier into the Suppliers table
+INSERT INTO Suppliers (SupplierID, CompanyName, ContactName, ContactTitle, Address, City)
+VALUES (30, 'My School Name', 'Your Name', 'Manager', '123 Sesame Street', 'Saint Paul');  -- Replace with actual details
+
 /*
-11. Display the new record that you created in the suppliers
-    table to ensure it was inserted correctly.
+11. Display the new record that you created in the suppliers table to ensure it was inserted correctly.
 */
+-- This query retrieves the record from the Suppliers table for the newly inserted supplier
+SELECT * 
+FROM Suppliers
+WHERE SupplierID = 30;
 
 /*
 12. Update the record in the products table for your favorite food.
 Change the unit price from $4.55 to $9.99.
 */
+-- This query updates the unit price for the product 'Pizza' (or your favorite food) in the Products table
+UPDATE Products
+SET UnitPrice = 9.99
+WHERE ProductName = 'Pizza';  -- Replace 'Pizza' with your favorite food
 
 /*
 13. Insert a new record into the Categories table. 
-Insert the values 'Ice Cream'and 'Frosty desserts' into the 
-CategoryName and Description columns. You don't need to insert
-a value into the CategoryID column because that it auto-populated.
-You don't need to insert a value into the Picture column 
-because it is optional.
+Insert the values 'Ice Cream' and 'Frosty desserts' into the CategoryName and Description columns. You don't need to insert a value into the CategoryID column because that is auto-populated.
+You don't need to insert a value into the Picture column because it is optional.
 */
+-- This query inserts a new category into the Categories table
+INSERT INTO Categories (CategoryName, Description)
+VALUES ('Ice Cream', 'Frosty desserts');
 
 /*
 14. Delete the record you just inserted into the Categories table.
 */
- 
-
+-- This query deletes the 'Ice Cream' category from the Categories table
+DELETE FROM Categories
+WHERE CategoryName = 'Ice Cream';
 
 
 
